@@ -27,6 +27,16 @@ import { editDocument } from "@/lib/ai/tools/edit-document";
 import { getWeather } from "@/lib/ai/tools/get-weather";
 import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
 import { updateDocument } from "@/lib/ai/tools/update-document";
+import { webSearch } from "@/lib/ai/tools/web-search";
+import { webFetch } from "@/lib/ai/tools/web-fetch";
+import { cryptoPrices } from "@/lib/ai/tools/crypto-prices";
+import { cryptoNews } from "@/lib/ai/tools/crypto-news";
+import { aiAgentNews } from "@/lib/ai/tools/ai-agent-news";
+import { githubFetch } from "@/lib/ai/tools/github-fetch";
+import { xFetch } from "@/lib/ai/tools/x-fetch";
+import { saveToBlob } from "@/lib/ai/tools/save-to-blob";
+import { loadConversation } from "@/lib/ai/tools/load-conversation";
+import { saveConversation } from "@/lib/ai/tools/save-conversation";
 import { isProductionEnvironment } from "@/lib/constants";
 import {
   createStreamId,
@@ -276,6 +286,16 @@ export async function POST(request: Request) {
                   "editDocument",
                   "updateDocument",
                   "requestSuggestions",
+                  "webSearch",
+                  "webFetch",
+                  "cryptoPrices",
+                  "cryptoNews",
+                  "aiAgentNews",
+                  "githubFetch",
+                  "xFetch",
+                  "saveToBlob",
+                  "loadConversation",
+                  "saveConversation",
                 ],
           instructions: systemPrompt({ requestHints, supportsTools }),
           messages: modelMessages,
@@ -325,6 +345,16 @@ export async function POST(request: Request) {
               modelId: chatModel,
               session,
             }),
+            webSearch,
+            webFetch,
+            cryptoPrices,
+            cryptoNews,
+            aiAgentNews,
+            githubFetch,
+            xFetch,
+            saveToBlob,
+            loadConversation: loadConversation({ session }),
+            saveConversation: saveConversation({ session }),
           },
         });
 

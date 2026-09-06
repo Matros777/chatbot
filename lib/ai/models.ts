@@ -1,12 +1,4 @@
-export const DEFAULT_CHAT_MODEL = "moonshotai/kimi-k2.5";
-
-export const titleModel = {
-  description: "Fast model for title generation",
-  gatewayOrder: ["fireworks", "bedrock"],
-  id: "moonshotai/kimi-k2.5",
-  name: "Kimi K2.5",
-  provider: "moonshotai",
-};
+export const DEFAULT_CHAT_MODEL = "dots-studio/dots-3-note-preview:free";
 
 export type ModelCapabilities = {
   tools: boolean;
@@ -19,91 +11,210 @@ export type ChatModel = {
   name: string;
   provider: string;
   description: string;
+  context?: string;
   gatewayOrder?: string[];
   reasoningEffort?: "none" | "minimal" | "low" | "medium" | "high";
 };
 
-export const chatModels: ChatModel[] = [
+// === Провайдер: OpenCode Zen (бесплатные модели, БЕЗ API-ключа) ===
+const ZEN_MODELS: ChatModel[] = [
   {
-    description: "Fast and capable model with tool use",
-    gatewayOrder: ["bedrock", "deepinfra"],
-    id: "deepseek/deepseek-v3.2",
-    name: "DeepSeek V3.2",
-    provider: "deepseek",
+    id: "big-pickle",
+    name: "Big Pickle (Zen)",
+    provider: "zen",
+    description: "Free stealth model",
   },
   {
-    description: "Moonshot AI flagship model",
-    gatewayOrder: ["fireworks", "bedrock"],
-    id: "moonshotai/kimi-k2.5",
-    name: "Kimi K2.5",
-    provider: "moonshotai",
+    id: "mimo-v2.5-free",
+    name: "MiMo-V2.5 Free (Zen)",
+    provider: "zen",
+    description: "Free model (limited time)",
   },
   {
-    description: "Compact reasoning model",
-    gatewayOrder: ["groq", "bedrock"],
-    id: "openai/gpt-oss-20b",
-    name: "GPT OSS 20B",
-    provider: "openai",
-    reasoningEffort: "low",
+    id: "ling-3.0-flash-fin-free",
+    name: "Ling 3.0 Flash Fin (Zen)",
+    provider: "zen",
+    description: "Free finance model (limited time)",
   },
   {
-    description: "Open-source 120B parameter model",
-    gatewayOrder: ["fireworks", "bedrock"],
-    id: "openai/gpt-oss-120b",
-    name: "GPT OSS 120B",
-    provider: "openai",
-    reasoningEffort: "low",
+    id: "nemotron-3-ultra-free",
+    name: "Nemotron 3 Ultra Free (Zen)",
+    provider: "zen",
+    description: "NVIDIA free endpoint",
   },
   {
-    description: "Fast non-reasoning model with tool use",
-    gatewayOrder: ["xai"],
-    id: "xai/grok-4.1-fast-non-reasoning",
-    name: "Grok 4.1 Fast",
-    provider: "xai",
+    id: "nemotron-3.5-lightning-free",
+    name: "Nemotron 3.5 Lightning (Zen)",
+    provider: "zen",
+    description: "NVIDIA free endpoint",
+  },
+  {
+    id: "muse-spark-1.3-contributor-free",
+    name: "Muse Spark 1.3 (Zen)",
+    provider: "zen",
+    description: "Meta contributor free",
+  },
+  {
+    id: "muse-spark-1.2-contributor-free",
+    name: "Muse Spark 1.2 (Zen)",
+    provider: "zen",
+    description: "Meta contributor free",
   },
 ];
+
+// === Провайдер: OpenRouter (бесплатные модели, нужен ключ) ===
+const OPENROUTER_MODELS: ChatModel[] = [
+  {
+    id: "nvidia/nemotron-3.5-lightning:free",
+    name: "Nemotron 3.5 Lightning",
+    provider: "openrouter",
+    description: "Open mixture-of-experts (free)",
+    context: "1000K",
+  },
+  {
+    id: "nvidia/nemotron-3.5-content-safety:free",
+    name: "Nemotron 3.5 Content Safety",
+    provider: "openrouter",
+    description: "Compact 4B safety model (free)",
+    context: "128K",
+  },
+  {
+    id: "nvidia/nemotron-3-ultra-550b-a55b:free",
+    name: "Nemotron 3 Ultra 550B",
+    provider: "openrouter",
+    description: "Open frontier reasoning MoE (free)",
+    context: "1000K",
+  },
+  {
+    id: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    name: "Nemotron 3 Nano Omni",
+    provider: "openrouter",
+    description: "30B-A3B multimodal reasoning (free)",
+    context: "256K",
+  },
+  {
+    id: "nvidia/nemotron-3-super-120b-a12b:free",
+    name: "Nemotron 3 Super 120B",
+    provider: "openrouter",
+    description: "120B hybrid MoE (free)",
+    context: "262K",
+  },
+  {
+    id: "inclusionai/ling-3.0-flash-fin:free",
+    name: "Ling 3.0 Flash Fin",
+    provider: "openrouter",
+    description: "Finance-focused MoE (free)",
+    context: "262K",
+  },
+  {
+    id: "dots-studio/dots-3-note-preview:free",
+    name: "Dots3 Note Preview",
+    provider: "openrouter",
+    description: "Open-weight MoE (free)",
+    context: "512K",
+  },
+  {
+    id: "liquid/lfm-2.5-2.6b:free",
+    name: "LFM 2.5 2.6B",
+    provider: "openrouter",
+    description: "Compact reasoning model (free)",
+    context: "65K",
+  },
+  {
+    id: "thinkingmachines/inkling-small:free",
+    name: "Inkling Small",
+    provider: "openrouter",
+    description: "Open-weight multimodal MoE (free)",
+    context: "1048K",
+  },
+  {
+    id: "poolside/laguna-s-2.1:free",
+    name: "Laguna S 2.1",
+    provider: "openrouter",
+    description: "Coding agent model (free)",
+    context: "262K",
+  },
+  {
+    id: "thinkingmachines/inkling:free",
+    name: "Inkling",
+    provider: "openrouter",
+    description: "Open-weight multimodal MoE (free)",
+    context: "1048K",
+  },
+  {
+    id: "poolside/laguna-xs-2.1:free",
+    name: "Laguna XS 2.1",
+    provider: "openrouter",
+    description: "33B-A3B coding model (free)",
+    context: "262K",
+  },
+  {
+    id: "cohere/north-mini-code:free",
+    name: "North Mini Code",
+    provider: "openrouter",
+    description: "Agentic coding model (free)",
+    context: "256K",
+  },
+  {
+    id: "z-ai/glm-5.2:free",
+    name: "GLM 5.2",
+    provider: "openrouter",
+    description: "Large-scale reasoning model (free)",
+    context: "256K",
+  },
+  {
+    id: "minimax/minimax-m3:free",
+    name: "MiniMax-M3",
+    provider: "openrouter",
+    description: "Multimodal foundation model (free)",
+    context: "1048K",
+  },
+  {
+    id: "google/gemma-4-26b-a4b-it:free",
+    name: "Gemma 4 26B A4B",
+    provider: "openrouter",
+    description: "Instruction-tuned MoE (free)",
+    context: "262K",
+  },
+  {
+    id: "google/gemma-4-31b-it:free",
+    name: "Gemma 4 31B",
+    provider: "openrouter",
+    description: "30.7B dense multimodal (free)",
+    context: "262K",
+  },
+  {
+    id: "minimax/minimax-m2.7:free",
+    name: "MiniMax-M2.7",
+    provider: "openrouter",
+    description: "Next-gen LLM (free)",
+    context: "196K",
+  },
+];
+
+export const chatModels: ChatModel[] = [...ZEN_MODELS, ...OPENROUTER_MODELS];
+
+export const titleModel: ChatModel = {
+  description: "Fast model for title generation",
+  id: "dots-studio/dots-3-note-preview:free",
+  name: "Dots3 Note Preview",
+  provider: "openrouter",
+};
 
 export async function getCapabilities(): Promise<
   Record<string, ModelCapabilities>
 > {
-  const results = await Promise.all(
-    chatModels.map(async (model) => {
-      try {
-        const res = await fetch(
-          `https://ai-gateway.vercel.sh/v1/models/${model.id}/endpoints`,
-          { next: { revalidate: 86_400 } }
-        );
-        if (!res.ok) {
-          return [model.id, { reasoning: false, tools: false, vision: false }];
-        }
-
-        const json = await res.json();
-        const endpoints = json.data?.endpoints ?? [];
-        const params = new Set(
-          endpoints.flatMap(
-            (e: { supported_parameters?: string[] }) =>
-              e.supported_parameters ?? []
-          )
-        );
-        const inputModalities = new Set(
-          json.data?.architecture?.input_modalities ?? []
-        );
-
-        return [
-          model.id,
-          {
-            reasoning: params.has("reasoning"),
-            tools: params.has("tools"),
-            vision: inputModalities.has("image"),
-          },
-        ];
-      } catch {
-        return [model.id, { reasoning: false, tools: false, vision: false }];
-      }
-    })
-  );
-
-  return Object.fromEntries(results);
+  // Все наши модели поддерживают tools. Reasoning/vision — по списку.
+  const result: Record<string, ModelCapabilities> = {};
+  for (const model of chatModels) {
+    const id = model.id.toLowerCase();
+    result[model.id] = {
+      reasoning: /reasoning|ultra|glm|nemotron|inkling|dots/.test(id),
+      tools: true,
+      vision: /omni|gemma|inkling|ultra/.test(id),
+    };
+  }
+  return result;
 }
 
 export const isDemo = process.env.IS_DEMO === "1";
@@ -122,31 +233,14 @@ export type GatewayModelWithCapabilities = ChatModel & {
 export async function getAllGatewayModels(): Promise<
   GatewayModelWithCapabilities[]
 > {
-  try {
-    const res = await fetch("https://ai-gateway.vercel.sh/v1/models", {
-      next: { revalidate: 86_400 },
-    });
-    if (!res.ok) {
-      return [];
-    }
-
-    const json = await res.json();
-    return (json.data ?? [])
-      .filter((m: GatewayModel) => m.type === "language")
-      .map((m: GatewayModel) => ({
-        capabilities: {
-          reasoning: m.tags?.includes("reasoning") ?? false,
-          tools: m.tags?.includes("tool-use") ?? false,
-          vision: m.tags?.includes("vision") ?? false,
-        },
-        description: "",
-        id: m.id,
-        name: m.name,
-        provider: m.id.split("/")[0],
-      }));
-  } catch {
-    return [];
-  }
+  return chatModels.map((model) => ({
+    ...model,
+    capabilities: {
+      reasoning: false,
+      tools: true,
+      vision: false,
+    },
+  }));
 }
 
 export function getActiveModels(): ChatModel[] {
@@ -168,62 +262,13 @@ export const modelsByProvider = chatModels.reduce(
 
 export type ModelAvailability = "healthy" | "impacted" | "unknown";
 
-type GatewayEndpoint = {
-  provider_name?: string;
-  status?: number;
-  uptime_last_15m?: number;
-  uptime_last_1h?: number;
-  latency_last_1h?: {
-    p50?: number;
-    p95?: number;
-  };
-};
-
-const PROVIDER_IMPACTED_UPTIME_THRESHOLD = 99;
-const PROVIDER_IMPACTED_P50_MS = 10_000;
-const PROVIDER_IMPACTED_P95_MS = 30_000;
-
-function isEndpointImpacted(endpoint: GatewayEndpoint) {
-  return (
-    (endpoint.status !== undefined && endpoint.status !== 0) ||
-    (endpoint.uptime_last_15m !== undefined &&
-      endpoint.uptime_last_15m < PROVIDER_IMPACTED_UPTIME_THRESHOLD) ||
-    (endpoint.uptime_last_1h !== undefined &&
-      endpoint.uptime_last_1h < PROVIDER_IMPACTED_UPTIME_THRESHOLD) ||
-    (endpoint.latency_last_1h?.p50 !== undefined &&
-      endpoint.latency_last_1h.p50 > PROVIDER_IMPACTED_P50_MS) ||
-    (endpoint.latency_last_1h?.p95 !== undefined &&
-      endpoint.latency_last_1h.p95 > PROVIDER_IMPACTED_P95_MS)
-  );
-}
-
 export async function getModelAvailability(
   modelId: string
 ): Promise<ModelAvailability> {
   const model = chatModels.find((item) => item.id === modelId);
-
   if (!model) {
     return "unknown";
   }
-
-  try {
-    const res = await fetch(
-      `https://ai-gateway.vercel.sh/v1/models/${model.id}/endpoints`,
-      { next: { revalidate: 60 } }
-    );
-    if (!res.ok) {
-      return "unknown";
-    }
-
-    const json = await res.json();
-    const endpoints = (json.data?.endpoints ?? []) as GatewayEndpoint[];
-
-    if (endpoints.length === 0) {
-      return "unknown";
-    }
-
-    return endpoints.some(isEndpointImpacted) ? "impacted" : "healthy";
-  } catch {
-    return "unknown";
-  }
+  // No gateway health endpoint for these providers — always report healthy.
+  return "healthy";
 }

@@ -134,3 +134,16 @@ export const stream = pgTable(
 );
 
 export type Stream = InferSelectModel<typeof stream>;
+
+// Память агента: история диалогов по пользователю (для load/save_conversation)
+export const conversationMemory = pgTable("ConversationMemory", {
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  messages: json("messages").notNull(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+  userId: uuid("userId")
+    .notNull()
+    .references(() => user.id),
+});
+
+export type ConversationMemory = InferSelectModel<typeof conversationMemory>;

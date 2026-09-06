@@ -21,6 +21,7 @@ import { generateUUID } from "../utils";
 import {
   type Chat,
   chat,
+  conversationMemory,
   type DBMessage,
   document,
   message,
@@ -585,6 +586,73 @@ export async function getStreamIdsByChatId({ chatId }: { chatId: string }) {
       .execute();
 
     return streamIds.map(({ id }) => id);
+  } catch (error) {
+    throw new ChatbotError("bad_request:database", { cause: error });
+  }
+}
+
+export type MemoryMessage = {
+  role: string;
+  content: string;
+};
+
+export async function getConversationMemory({
+  userId,
+}: {
+  userId: string;
+}): Promise<{ found: boolean; messages: MemoryMessage[] }> {
+  try {
+    const rows = await db
+      .select({ messages: conversationMemory.messages })
+      .from(conversationMemory)
+      .where(eq(conversationMemory.userId, userId))
+      .limit(1)
+      .execute();
+
+    if (rows.length === 0) {
+      return { found: false, messages: [] };
+    }
+    return { found: true, messages: (rows[0].messages ?? []) as MemoryMessage[] };
+  } catch (error) {
+    throw new ChatbotError("bad_request:database", { cause: error });
+  }
+}
+
+export async function saveConversationMemory({
+  userId,
+  messages,
+}: {
+  userId: string;
+  messages: MemoryMessage[];
+}) {
+  try {
+    const existing = await db
+      .select({ id: conversationMemory.id })
+      .from(conversationMemory)
+      .where(eq(conversationMemory.userId, userId))
+      .limit(1)
+      .execute();
+
+    if (existing.length > 0) {
+      await db
+        .update(conversationMemory)
+        .set({ messages, updatedAt: new Date() })
+        .where(eq(conversationMemory.userId, userId))
+        .execute();
+    } else {
+      await db
+        .insert(conversationMemory)
+        .values({
+          createdAt: new Date(),
+          id: generateUUID(),
+          messages,
+          updatedAt: new Date(),
+          userId,
+        })
+        .execute();
+    }
+
+    return { success: true, message: `Saved ${messages.length} messages` };
   } catch (error) {
     throw new ChatbotError("bad_request:database", { cause: error });
   }
