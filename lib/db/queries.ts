@@ -57,20 +57,6 @@ export async function createUser(email: string, password: string) {
   }
 }
 
-export async function createGuestUser() {
-  const email = `guest-${Date.now()}`;
-  const password = generateHashedPassword(generateUUID());
-
-  try {
-    return await db.insert(user).values({ email, password }).returning({
-      email: user.email,
-      id: user.id,
-    });
-  } catch (error) {
-    throw new ChatbotError("bad_request:database", { cause: error });
-  }
-}
-
 export async function saveChat({
   id,
   userId,
