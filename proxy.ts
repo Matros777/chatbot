@@ -13,6 +13,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Логин и регистрация доступны без авторизации
+  if (pathname === "/login" || pathname === "/register") {
+    return NextResponse.next();
+  }
+
   const token = await getToken({
     req: request,
     secret: process.env.AUTH_SECRET,
@@ -26,10 +31,6 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(
       new URL(`${base}/login?redirectUrl=${redirectUrl}`, request.url)
     );
-  }
-
-  if (token && ["/login", "/register"].includes(pathname)) {
-    return NextResponse.redirect(new URL(`${base}/`, request.url));
   }
 
   return NextResponse.next();
