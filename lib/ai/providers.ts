@@ -11,10 +11,11 @@ const openrouterProvider = createOpenAICompatible({
 });
 
 // Провайдер OpenCode Zen (free-модели БЕЗ ключа)
+// ВАЖНО: отправка заголовка Authorization ломает free-запросы (Invalid API key).
+// Поэтому API-ключ НЕ передаём вообще.
 const zenProvider = createOpenAICompatible({
   name: "zen",
   baseURL: process.env.ZEN_BASE_URL || "https://opencode.ai/zen/v1",
-  apiKey: process.env.ZEN_API_KEY || "zen-free", // free-модели не требуют ключа
 });
 
 const gatewayProvider = gateway;
