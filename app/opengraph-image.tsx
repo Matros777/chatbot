@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 
 // OpenGraph-карточка: фон + favicon маленький в правом верхнем углу
-export const runtime = "edge";
 export const alt = "chatbot-gold-iota — AI Chat Assistant";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
