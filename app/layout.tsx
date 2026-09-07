@@ -6,14 +6,72 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 
+const SITE_URL = "https://chatbot-gold-iota-13.vercel.app";
+
 export const metadata: Metadata = {
-  description: "Next.js chatbot template using the AI SDK.",
-  metadataBase: new URL("https://chat.vercel.ai"),
-  title: "Next.js Chatbot Template",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "chatbot-gold-iota — AI Chat Assistant",
+    template: "%s | chatbot-gold-iota",
+  },
+  description:
+    "chatbot-gold-iota is a free AI chat assistant powered by OpenRouter and Zen models. Ask questions, generate code, search the web and chat with smart AI agents.",
+  keywords: [
+    "AI chat",
+    "chatbot",
+    "chat assistant",
+    "AI agent",
+    "OpenRouter",
+    "LLM",
+    "online chat",
+    "ask AI",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: SITE_URL,
+    siteName: "chatbot-gold-iota",
+    title: "chatbot-gold-iota — AI Chat Assistant",
+    description:
+      "Free AI chat assistant with multiple models. Ask anything, write code, search the web.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "chatbot-gold-iota — AI Chat Assistant",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "chatbot-gold-iota — AI Chat Assistant",
+    description:
+      "Free AI chat assistant with multiple models. Ask anything, write code, search the web.",
+    images: ["/opengraph-image"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon-192.png",
+  },
 };
 
 export const viewport = {
   maximumScale: 1,
+  themeColor: "#000000",
 };
 
 const geist = Geist({
@@ -79,6 +137,20 @@ export default function RootLayout({
           >
             <TooltipProvider>{children}</TooltipProvider>
           </SessionProvider>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "chatbot-gold-iota",
+                url: SITE_URL,
+                description:
+                  "Free AI chat assistant with multiple models. Ask anything, write code, search the web.",
+                inLanguage: "en",
+              }),
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>
