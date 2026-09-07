@@ -10,12 +10,11 @@ const openrouterProvider = createOpenAICompatible({
   apiKey: process.env.OPENROUTER_API_KEY || "EMPTY",
 });
 
-// Провайдер OpenCode Zen (free-модели БЕЗ ключа)
-// ВАЖНО: отправка заголовка Authorization ломает free-запросы (Invalid API key).
-// Поэтому API-ключ НЕ передаём вообще.
-const zenProvider = createOpenAICompatible({
-  name: "zen",
-  baseURL: process.env.ZEN_BASE_URL || "https://opencode.ai/zen/v1",
+// Провайдер ASI1
+const asi1Provider = createOpenAICompatible({
+  name: "asi1",
+  baseURL: process.env.ASI1_BASE_URL || "https://api.asi1.ai/v1",
+  apiKey: process.env.ASI1_API_KEY,
 });
 
 const gatewayProvider = gateway;
@@ -35,9 +34,9 @@ export const myProvider = isTestEnvironment
     })()
   : null;
 
-function modelProvider(modelId: string): "zen" | "openrouter" | "gateway" {
+function modelProvider(modelId: string): "asi1" | "openrouter" | "gateway" {
   const model = chatModels.find((m) => m.id === modelId);
-  if (model?.provider === "zen") return "zen";
+  if (model?.provider === "asi1") return "asi1";
   if (model?.provider === "openrouter") return "openrouter";
   return "gateway";
 }
@@ -48,8 +47,8 @@ export function getLanguageModel(modelId: string): LanguageModel {
   }
 
   const providerKind = modelProvider(modelId);
-  if (providerKind === "zen") {
-    return zenProvider(modelId);
+  if (providerKind === "asi1") {
+    return asi1Provider(modelId);
   }
   if (providerKind === "openrouter") {
     return openrouterProvider(modelId);
@@ -63,8 +62,8 @@ export function getTitleModel(): LanguageModel {
   }
 
   const providerKind = modelProvider(titleModel.id);
-  if (providerKind === "zen") {
-    return zenProvider(titleModel.id);
+  if (providerKind === "asi1") {
+    return asi1Provider(titleModel.id);
   }
   if (providerKind === "openrouter") {
     return openrouterProvider(titleModel.id);

@@ -16,49 +16,14 @@ export type ChatModel = {
   reasoningEffort?: "none" | "minimal" | "low" | "medium" | "high";
 };
 
-// === Провайдер: OpenCode Zen (бесплатные модели, БЕЗ API-ключа) ===
-const ZEN_MODELS: ChatModel[] = [
+// === Провайдер: ASI1 ===
+const ASI1_MODELS: ChatModel[] = [
   {
-    id: "big-pickle",
-    name: "Big Pickle (Zen)",
-    provider: "zen",
-    description: "Free stealth model",
-  },
-  {
-    id: "mimo-v2.5-free",
-    name: "MiMo-V2.5 Free (Zen)",
-    provider: "zen",
-    description: "Free model (limited time)",
-  },
-  {
-    id: "ling-3.0-flash-fin-free",
-    name: "Ling 3.0 Flash Fin (Zen)",
-    provider: "zen",
-    description: "Free finance model (limited time)",
-  },
-  {
-    id: "nemotron-3-ultra-free",
-    name: "Nemotron 3 Ultra Free (Zen)",
-    provider: "zen",
-    description: "NVIDIA free endpoint",
-  },
-  {
-    id: "nemotron-3.5-lightning-free",
-    name: "Nemotron 3.5 Lightning (Zen)",
-    provider: "zen",
-    description: "NVIDIA free endpoint",
-  },
-  {
-    id: "muse-spark-1.3-contributor-free",
-    name: "Muse Spark 1.3 (Zen)",
-    provider: "zen",
-    description: "Meta contributor free",
-  },
-  {
-    id: "muse-spark-1.2-contributor-free",
-    name: "Muse Spark 1.2 (Zen)",
-    provider: "zen",
-    description: "Meta contributor free",
+    id: "asi1",
+    name: "ASI1",
+    provider: "asi1",
+    description: "ASI1 agentic model (550K context)",
+    context: "550K",
   },
 ];
 
@@ -192,7 +157,7 @@ const OPENROUTER_MODELS: ChatModel[] = [
   },
 ];
 
-export const chatModels: ChatModel[] = [...ZEN_MODELS, ...OPENROUTER_MODELS];
+export const chatModels: ChatModel[] = [...ASI1_MODELS, ...OPENROUTER_MODELS];
 
 export const titleModel: ChatModel = {
   description: "Fast model for title generation",
