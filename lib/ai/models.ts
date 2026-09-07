@@ -1,4 +1,4 @@
-export const DEFAULT_CHAT_MODEL = "dots-studio/dots-3-note-preview:free";
+export const DEFAULT_CHAT_MODEL = "minimax/minimax-m3:free";
 
 export type ModelCapabilities = {
   tools: boolean;
@@ -196,8 +196,8 @@ export const chatModels: ChatModel[] = [...ZEN_MODELS, ...OPENROUTER_MODELS];
 
 export const titleModel: ChatModel = {
   description: "Fast model for title generation",
-  id: "dots-studio/dots-3-note-preview:free",
-  name: "Dots3 Note Preview",
+  id: "minimax/minimax-m3:free",
+  name: "MiniMax-M3",
   provider: "openrouter",
 };
 
