@@ -45,15 +45,79 @@ export async function getUser(email: string): Promise<User[]> {
   }
 }
 
-export async function createUser(email: string, password: string) {
+export async function createUser(
+  email: string,
+  password: string,
+  verificationToken?: string,
+  verificationExpires?: Date
+) {
   const hashedPassword = generateHashedPassword(password);
 
   try {
-    return await db.insert(user).values({ email, password: hashedPassword });
+    return await db.insert(user).values({
+      email,
+      password: hashedPassword,
+      verificationToken: verificationToken ?? null,
+      verificationExpires: verificationExpires ?? null,
+    });
   } catch (error) {
     throw new ChatbotError("bad_request:database", {
       cause: error,
     });
+  }
+}
+
+export async function setVerificationToken({
+  email,
+  token,
+  expiresAt,
+}: {
+  email: string;
+  token: string;
+  expiresAt: Date;
+}) {
+  try {
+    await db
+      .update(user)
+      .set({
+        verificationToken: token,
+        verificationExpires: expiresAt,
+      })
+      .where(eq(user.email, email))
+      .execute();
+  } catch (error) {
+    throw new ChatbotError("bad_request:database", { cause: error });
+  }
+}
+
+export async function getUserByVerificationToken(
+  token: string
+): Promise<User[]> {
+  try {
+    return await db
+      .select()
+      .from(user)
+      .where(eq(user.verificationToken, token))
+      .limit(1)
+      .execute();
+  } catch (error) {
+    throw new ChatbotError("bad_request:database", { cause: error });
+  }
+}
+
+export async function markEmailVerified(userId: string) {
+  try {
+    await db
+      .update(user)
+      .set({
+        emailVerified: true,
+        verificationToken: null,
+        verificationExpires: null,
+      })
+      .where(eq(user.id, userId))
+      .execute();
+  } catch (error) {
+    throw new ChatbotError("bad_request:database", { cause: error });
   }
 }
 

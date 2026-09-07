@@ -21,6 +21,8 @@ export const user = pgTable("User", {
   name: text("name"),
   password: varchar("password", { length: 64 }),
   updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+  verificationExpires: timestamp("verificationExpires"),
+  verificationToken: text("verificationToken"),
 });
 
 export type User = InferSelectModel<typeof user>;

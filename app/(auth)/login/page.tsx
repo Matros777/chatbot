@@ -9,9 +9,11 @@ import { AuthForm } from "@/components/chat/auth-form";
 import { SubmitButton } from "@/components/chat/submit-button";
 import { toast } from "@/components/chat/toast";
 import { type LoginActionState, login } from "../actions";
+import { useSearchParams } from "next/navigation";
 
 export default function Page() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [isSuccessful, setIsSuccessful] = useState(false);
 
@@ -22,10 +24,30 @@ export default function Page() {
 
   const { update: updateSession } = useSession();
 
+  // Статус после перехода по ссылке подтверждения
+  useEffect(() => {
+    if (searchParams.get("verified") === "1") {
+      toast({
+        description: "Email verified! You can sign in now.",
+        type: "success",
+      });
+    } else if (searchParams.get("error") === "token_expired") {
+      toast({
+        description: "Verification link expired. Register again.",
+        type: "error",
+      });
+    } else if (searchParams.get("error") === "invalid_token") {
+      toast({
+        description: "Invalid verification link.",
+        type: "error",
+      });
+    }
+  }, [searchParams]);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: router and updateSession are stable refs
   useEffect(() => {
     if (state.status === "failed") {
-      toast({ description: "Invalid credentials!", type: "error" });
+      toast({ description: "Invalid credentials or unverified email!", type: "error" });
     } else if (state.status === "invalid_data") {
       toast({
         description: "Failed validating your submission!",

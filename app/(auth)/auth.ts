@@ -80,6 +80,12 @@ export const {
           return null;
         }
 
+        // Почта должна быть подтверждена
+        if (!user.emailVerified) {
+          await compare(password, DUMMY_PASSWORD);
+          return null;
+        }
+
         return { ...user, type: "regular" };
       },
       credentials: {

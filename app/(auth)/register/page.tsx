@@ -32,6 +32,12 @@ export default function Page() {
         description: "Failed validating your submission!",
         type: "error",
       });
+    } else if (state.status === "sent_verification") {
+      toast({
+        description: "Check your email to verify your account!",
+        type: "success",
+      });
+      setIsSuccessful(true);
     } else if (state.status === "success") {
       toast({ description: "Account created!", type: "success" });
       setIsSuccessful(true);
