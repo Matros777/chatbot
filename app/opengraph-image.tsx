@@ -16,44 +16,30 @@ export default async function Image() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background:
-            "radial-gradient(circle at 20% 10%, #1e1b4b 0%, #0b1020 55%, #04050c 100%)",
+          background: "#0a0a0f",
           position: "relative",
           fontFamily: "sans-serif",
         }}
       >
-        {/* Декоративные свечения */}
+        {/* Лёгкий декоративный контур-граница */}
         <div
           style={{
             position: "absolute",
-            left: "-120px",
-            top: "-120px",
-            width: 500,
-            height: 500,
-            borderRadius: 999,
-            background: "rgba(99,102,241,0.25)",
-            filter: "blur(80px)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            right: "-80px",
-            bottom: "-140px",
-            width: 480,
-            height: 480,
-            borderRadius: 999,
-            background: "rgba(168,85,247,0.18)",
-            filter: "blur(90px)",
+            left: 36,
+            top: 36,
+            right: 36,
+            bottom: 36,
+            borderRadius: 28,
+            border: "1px solid #232330",
           }}
         />
 
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <h1
             style={{
-              fontSize: 72,
-              fontWeight: 800,
-              color: "#f3f4f6",
+              fontSize: 64,
+              fontWeight: 700,
+              color: "#c8ccd4",
               margin: "0 0 16px 0",
               letterSpacing: "-1px",
             }}
@@ -62,8 +48,8 @@ export default async function Image() {
           </h1>
           <p
             style={{
-              fontSize: 30,
-              color: "#9ca3af",
+              fontSize: 28,
+              color: "#8b909c",
               margin: 0,
             }}
           >
@@ -74,12 +60,12 @@ export default async function Image() {
         {/* Favicon маленький в правом верхнем углу */}
         <img
           src="https://chatbot-gold-iota-13.vercel.app/icon.svg"
-          width={72}
-          height={72}
+          width={64}
+          height={64}
           style={{
             position: "absolute",
-            top: 32,
-            right: 32,
+            top: 48,
+            right: 48,
             borderRadius: 14,
           }}
         />
