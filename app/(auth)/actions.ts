@@ -4,7 +4,7 @@ import { z } from "zod";
 import { Resend } from "resend";
 import { randomBytes } from "crypto";
 
-import { createUser, getUser } from "@/lib/db/queries";
+import { createUser, getUser, setVerificationToken } from "@/lib/db/queries";
 
 import { signIn } from "./auth";
 
@@ -74,7 +74,19 @@ export const register = async (
 
     const [existingUser] = await getUser(validatedData.email);
 
+    // Юзер уже есть
     if (existingUser) {
+      // Если почта НЕ подтверждена — переотправляем письмо с новым токеном
+      if (!existingUser.emailVerified) {
+        const verificationToken = generateVerificationToken();
+        const verificationExpires = new Date(Date.now() + 60 * 60 * 1000);
+        await setVerificationToken({
+          email: validatedData.email,
+          token: verificationToken,
+          expiresAt: verificationExpires,
+        });
+        await sendVerificationEmail(validatedData.email, verificationToken);
+      }
       return { status: "user_exists" } as RegisterActionState;
     }
 
@@ -89,31 +101,7 @@ export const register = async (
     );
 
     // Отправляем письмо с подтверждением
-    if (RESEND_API_KEY) {
-      const resend = new Resend(RESEND_API_KEY);
-      const verifyUrl = `${APP_URL}/verify-email?token=${verificationToken}`;
-
-      const { error } = await resend.emails.send({
-        from: EMAIL_FROM,
-        to: [validatedData.email],
-        subject: "Confirm your email - chatbot-gold-iota",
-        html: `
-          <div style="font-family:Arial,sans-serif;background:#0a0a0f;color:#e8eaf0;padding:40px;text-align:center">
-            <h2 style="color:#e8eaf0">Confirm your email</h2>
-            <p style="color:#c8ccd4">Click the button below to verify your account.</p>
-            <a href="${verifyUrl}" style="display:inline-block;background:#3b82f6;color:#fff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:bold;margin:20px 0">
-              Confirm email
-            </a>
-            <p style="color:#8b909c;font-size:14px">Or copy this link:<br/>${verifyUrl}</p>
-            <p style="color:#8b909c;font-size:13px;margin-top:20px">This link expires in 1 hour.</p>
-          </div>
-        `,
-      });
-
-      if (error) {
-        return { status: "failed" } as RegisterActionState;
-      }
-    }
+    await sendVerificationEmail(validatedData.email, verificationToken);
 
     return { status: "sent_verification" } as RegisterActionState;
   } catch (error) {
@@ -124,3 +112,32 @@ export const register = async (
     return { status: "failed" };
   }
 };
+
+async function sendVerificationEmail(email: string, token: string) {
+  if (!RESEND_API_KEY) {
+    return;
+  }
+  const resend = new Resend(RESEND_API_KEY);
+  const verifyUrl = `${APP_URL}/verify-email?token=${token}`;
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: [email],
+    subject: "Confirm your email - chatbot-gold-iota",
+    html: `
+      <div style="font-family:Arial,sans-serif;background:#0a0a0f;color:#e8eaf0;padding:40px;text-align:center">
+        <h2 style="color:#e8eaf0">Confirm your email</h2>
+        <p style="color:#c8ccd4">Click the button below to verify your account.</p>
+        <a href="${verifyUrl}" style="display:inline-block;background:#3b82f6;color:#fff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:bold;margin:20px 0">
+          Confirm email
+        </a>
+        <p style="color:#8b909c;font-size:14px">Or copy this link:<br/>${verifyUrl}</p>
+        <p style="color:#8b909c;font-size:13px;margin-top:20px">This link expires in 1 hour.</p>
+      </div>
+    `,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
